@@ -1,12 +1,12 @@
-import { GET_REPO } from '../actions/action.js';
+import { RECEIVE_RESULT } from '../actions/action.js';
 
 const reducer = (state=[], action) => {
 	switch (action.type) {
-		case GET_REPO:
+		case RECEIVE_RESULT:
 			return {
 				...state,
-				result: action.result.items
-			}
+				result: action.result.items,
+			}	
 		default:
 			return {...state}
 	}

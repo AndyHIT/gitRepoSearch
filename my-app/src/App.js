@@ -23,6 +23,7 @@ class App extends Component {
 			searchByStar: '',
 			searchByLicense: '',
 			includeForked: false,
+			loading: false,
 		}
 	}
 
@@ -50,17 +51,26 @@ class App extends Component {
 	search(){
 		const { dispatch } = this.props;
 		this.setState({
-			clickedSearch: true
+			clickedSearch: true,
 		});
-		dispatch(getSearchResult(this.state.searchByContext, this.state.searchByStar, this.state.searchByLicense, this.state.includeForked));
+		this.setState(() => {
+            return { loading: true }
+        });
+		dispatch(getSearchResult(this.state.searchByContext, this.state.searchByStar, this.state.searchByLicense, this.state.includeForked));		
 		const queryStr = encodeURIComponent(this.state.searchByContext)+'+stars'+encodeURIComponent(`:${this.state.searchByStar}`)+'+license'+encodeURIComponent(`:${this.state.searchByLicense}`)+'+fork'+encodeURIComponent(`:${this.state.includeForked}`);
 		this.props.history.push('?q='+queryStr);
+		setTimeout(() => {
+            this.setState(() => {
+                return { loading: false }
+            });
+        }, 1000);
 	}
 
 	render() {
 		return (
 			<div className="App">
 				<Header />
+				<div className={`${this.state.loading ? 'show' : 'hide'} overlay`}></div>
 				<div className="project-name">Even Financial GitHub Repository Search</div>
 				<div className="searchForm">
 					<div className="input-wrapper">
@@ -143,28 +153,32 @@ class App extends Component {
 					</div>
 					<div className="button-wrapper">
 						<button 
-							className="search-btn"
+							className={`${this.state.loading ? 'loading' : 'search-btn'}`}
 							onClick={this.search}
-						>SEARCH</button>
+						>
+							<span className={`${this.state.loading ? 'hide' : 'show'}`}>SEARCH</span>
+						</button>
 					</div>
 				</div>
 				<hr />
-				<div className="result-title">{this.state.clickedSearch ? 'SEARCH results:': 'Please enter query and click SEARCH button above, results appear here.'}</div>
+				<div className="result-title">{this.state.clickedSearch ? 'SEARCH results:' : 'Please enter query and click SEARCH button above, results appear here.'}</div>
 				{ (this.props.result !== undefined) ? ( 
-					this.props.result.map((item) => {
-						return (
-							<ResultForm
-								key={item.id}
-								id={item.id}
-								name={item.full_name}
-								owner={item.owner.login}
-								description={item.description}
-								stars={item.stargazers_count}
-								license={item.license!==null ? item.license.name : null}
-								forks={item.forks}
-							/>
-						)
-					})
+					this.props.result.length !== 0 ? (
+						this.props.result.map((item) => {
+							return (
+								<ResultForm
+									key={item.id}
+									id={item.id}
+									name={item.full_name}
+									owner={item.owner.login}
+									description={item.description}
+									stars={item.stargazers_count}
+									license={item.license!==null ? item.license.name : null}
+									forks={item.forks}
+								/>
+							)
+						})
+					) : 'No result found'
 				) : ''}
 				<Footer />
 			</div>

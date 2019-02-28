@@ -1,10 +1,10 @@
 const githubSearchUrl = 'https://api.github.com/search/repositories';
 
-export const GET_REPO = 'GET_REPO';
+export const RECEIVE_RESULT = 'RECEIVE_RESULT';
 
-function sendResultToReducer(result){
+function receiveResult(result){
 	return {
-		type: GET_REPO,
+		type: RECEIVE_RESULT,
 		result
 	}
 }
@@ -17,7 +17,7 @@ export default function getSearchResult(text, stars, license, forked){
 				return response.json();
 			})
 			.then(data => {
-				dispatch(sendResultToReducer(data));
+				dispatch(receiveResult(data));
 			})
 			.catch(() => {
 				alert('Error when retrieving the search result');

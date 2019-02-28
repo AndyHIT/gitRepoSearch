@@ -4,12 +4,11 @@ import PropTypes from 'prop-types';
 import './ResultForm.scss';
 
 const propTypes = {
-	name: PropTypes.string.isRequired,
-	owner: PropTypes.string.isRequired,
-	description: PropTypes.string.isRequired,
-	stars: PropTypes.number.isRequired,
-	license: PropTypes.string.isRequired,
-	forks: PropTypes.number.isRequired,
+	name: PropTypes.string,
+	description: PropTypes.string,
+	stars: PropTypes.number,
+	license: PropTypes.string,
+	forks: PropTypes.number,
 };
 
 const defaultProps = {
